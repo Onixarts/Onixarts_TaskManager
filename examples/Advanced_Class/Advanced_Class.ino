@@ -4,7 +4,7 @@
 // This example blinks LED and uses TaskManager inheritance. It also shows how to put taskManager object inside custom MyClass class.
 // 
 // Code explanation: TODO
-// Github: TODO
+// Github: https://github.com/Onixarts/Onixarts_TaskManager
 // Author's site: http://onixarts.pl
 // Contact: software@onixarts.pl
 // 
