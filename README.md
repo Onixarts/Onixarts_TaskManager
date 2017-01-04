@@ -1,4 +1,4 @@
-# Onixarts_TaskManager
+# Onixarts Task Manager
 Task schedulling library for Arduino. You can add many tasks that will call execution functions in defined time period.
 
 ## Features
@@ -132,4 +132,4 @@ In `TASK_END` macro You specify task instance member like `task1`. It is also im
 
 How about updating tasks inside class? Well, there are few methods. You can put `TaskManager::Manager` in global space and `AddTask()` for each object's task, then call `Update()` in `loop()` function. This is not very good solution in case You add new task somewhere in code, You always must remember to register it in main ino file. Better solution is to put `Manager` instance inside each class. Then You register only current tasks in class constructor. If manager is defined as public You can call it in ino's `loop()` function like `myObject.taskManager.Update()`.
 
-In example above I use third technique. `MyClass` inherits from `TaskManager::Manager` so it becomes a manager itself. In `loop()` function I just called `myObject().Update()` as `MyClass` inherits `Update()` method from manager.
+In example above I use third technique. `MyClass` inherits from `TaskManager::Manager` so it becomes a manager itself. In `loop()` function I just called `myObject.Update()` as `MyClass` inherits `Update()` method from manager.
