@@ -1,5 +1,8 @@
 // Onixarts_TaskManager is a task schedulling library for Arduino.
 // 
+// Define OA_NO_CALLBACKS preprocesor symbol to compile library without callback function support (reducing SRAM usage)
+// when using as class member
+//
 // Code explanation: TODO
 // Github: https://github.com/Onixarts/Onixarts_TaskManager
 // Author's site: http://onixarts.pl
@@ -54,7 +57,7 @@ namespace Onixarts
 			class Task
 			{
 			public:
-				Task(TaskExecuteDelegate executeDelegate, unsigned long taskInterval, byte taskState = TaskState::Running, int repeatCount = 0);
+				Task(TaskExecuteDelegate executeDelegate, unsigned long taskInterval, byte taskState = TaskState::Running, byte repeatCount = 0);
 
 				void Update(unsigned long now);			// Update task will check if it should Execute user function
 				void Execute();							// Executes user function.
@@ -65,12 +68,14 @@ namespace Onixarts
 				void SetLastExecutionTime(unsigned long lastExecutionTime) { this->m_lastExecutionTime = lastExecutionTime; }	// Sets last execution time
 				bool IsRunning() { return m_state == TaskState::Running; }		// Check if task is running
 				byte GetState() { return m_state; }			// Returns task current state
-				void SetRepeatCount(int repeatCount) { m_repeatCount = repeatCount; m_repeatIndex = 0; } // Set repeated Task 
+				void SetRepeatCount(byte repeatCount) { m_repeatCount = repeatCount; m_repeatIndex = 0; } // Set repeated Task 
 				void SetTaskInterval(unsigned long interval) { m_taskInterval = interval; }
 
 
+#ifndef OA_NO_CALLBACKS
 				void SetStartEventDelegate(TaskStateChangeDelegate startDelegate) { m_startDelegate = startDelegate; }
 				void SetStopEventDelegate(TaskStateChangeDelegate stopDelegate) { m_stopDelegate = stopDelegate; }
+#endif
 
 				virtual void OnExecute() {}
 				virtual void OnStart() {} // not called on autostart
@@ -79,14 +84,15 @@ namespace Onixarts
 			protected:
 				byte m_state;
 
+#ifndef OA_NO_CALLBACKS
 				TaskExecuteDelegate m_executeDelegate;	// task execute callback delegate
 				TaskStateChangeDelegate m_startDelegate;	// task start callback delegate, not called on autostart
 				TaskStateChangeDelegate m_stopDelegate;	// task stop callback delegate
-
+#endif
 				unsigned long m_taskInterval;				// interval in milliseconds between executions, or time from start to one time execution
 				unsigned long m_lastExecutionTime;		// last execution time in milliseconds
-				int	m_repeatCount;						// How many times Task should be executed, 0 = infinite
-				int m_repeatIndex;						// current repeat index
+				byte m_repeatCount;						// How many times Task should be executed, 0 = infinite
+				byte m_repeatIndex;						// current repeat index
 			};
 			//-------------------------------------------------------------------------------------------------------------------
 

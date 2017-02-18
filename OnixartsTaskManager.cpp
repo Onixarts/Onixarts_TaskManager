@@ -2,12 +2,16 @@
 
 using namespace Onixarts::Tools::TaskManager;
 
-Task::Task( TaskExecuteDelegate executeDelegate, unsigned long taskInterval, byte taskState, int repeatCount )
-: m_startDelegate( NULL)
+Task::Task( TaskExecuteDelegate executeDelegate, unsigned long taskInterval, byte taskState, byte repeatCount )
+: m_repeatIndex(0)
+#ifndef OA_NO_CALLBACKS
+,m_startDelegate( NULL)
 , m_stopDelegate(NULL)
-, m_repeatIndex(0)
+#endif 
 {
+#ifndef OA_NO_CALLBACKS
 	m_executeDelegate = executeDelegate;
+#endif
 	m_taskInterval = taskInterval;
 	m_state = taskState;
 	m_repeatCount = max(0, repeatCount);
@@ -28,8 +32,10 @@ void Task::Update(unsigned long now)
 void Task::Execute()
 {
 	OnExecute();
+#ifndef OA_NO_CALLBACKS
 	if( m_executeDelegate != NULL )
 		m_executeDelegate();
+#endif
 	if( m_repeatCount > 0 )
 	{
 		m_repeatIndex++;
@@ -51,8 +57,10 @@ void Task::Restart()
 	m_repeatIndex = 0;
 
 	OnStart();
+#ifndef OA_NO_CALLBACKS
 	if( m_startDelegate != NULL )
 		m_startDelegate();
+#endif
 }
 
 void Task::Stop()
@@ -62,7 +70,9 @@ void Task::Stop()
 		m_state = TaskState::Stopped;
 		m_repeatIndex = 0;
 		OnStop();
+#ifndef OA_NO_CALLBACKS
 		if (m_stopDelegate != NULL)
 			m_stopDelegate();
+#endif
 	}
 }
